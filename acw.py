@@ -2,12 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import random
+show_actual = False
 
 # box_muller = lambda mu, sigma : 
 # random.uniform(0.0, 1.0)
 
 noise = lambda : random.gauss(0.0, 0.001)
-euler = lambda t, h, y, dy : y +  (((-2 * y) + dy(t)) * h)
+euler = lambda x, yn, dy, h : yn + (dy(yn, x) * h)
 
 #0.5 is poor
 
@@ -21,16 +22,16 @@ def u(t):
         return 3
     raise Exception("Not implemented")
 
-dy = lambda t : 2 * u(t)
+dy = lambda y, t :  (-2 * y) + (2 * u(t))
 
-x0 = 0
-x0_noise = 0
+x0 = 1
+x0_noise = 1
 h = 0.1
 
 simulation_length = 15
 x = list()
-y_noise = list()
 y = list()
+y_noise = list()
 f = list()
 
 for k in range(0, int(simulation_length / h) + 1):
@@ -38,8 +39,8 @@ for k in range(0, int(simulation_length / h) + 1):
     x.append(t)
     y.append(x0)
     y_noise.append(x0_noise)
-    x0 = euler(t, h, x0, dy)
-    x0_noise = euler(t, h, x0_noise, dy) + noise()
+    x0 = euler(t, x0, dy, h)
+    x0_noise = euler(t, x0_noise, dy, h) + noise()
     f.append((-2 * t))
 
 print("Summary:")
@@ -48,9 +49,10 @@ for a, b in zip(x, y):
 
 plt.plot(x, y)
 plt.plot(x, y_noise)
-plt.plot(x, [dy(t) for t in x], color="g")
-#plt.plot(x, f, color="g")
-plt.legend(["y", "y + noise", "dy"])#, "f"])
+plt.plot(x, [u(t) for t in x], color="green")
+if show_actual:
+    plt.plot(x, [u(t) - math.exp(-2 * t) for t in x], color="black")
+plt.legend(["~f(x)", "~f(x) + N", "f(x)"])
 plt.grid(which="major", color="r")
 plt.grid(which="minor", color="b")
 plt.show()
