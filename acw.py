@@ -4,13 +4,8 @@ import math
 import random
 show_actual = False
 
-# box_muller = lambda mu, sigma : 
-# random.uniform(0.0, 1.0)
-
-noise = lambda : random.gauss(0.0, 0.001)
+noise = lambda : random.gauss(0.0, 0.001) #TODO: Change to your own function using box muller...
 euler = lambda x, yn, dy, h : yn + (dy(yn, x) * h)
-
-#0.5 is poor
 
 #given that dy/dt = 2t and y0 = 2 -> y = t^2 + 2
 def u(t):
@@ -26,7 +21,8 @@ dy = lambda y, t :  (-2 * y) + (2 * u(t))
 
 x0 = 1
 x0_noise = 1
-h = 0.1
+#0.5 is poor
+h = 0.01
 
 simulation_length = 15
 x = list()
